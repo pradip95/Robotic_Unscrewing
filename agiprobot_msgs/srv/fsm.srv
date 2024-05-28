@@ -1,0 +1,6 @@
+# codec in Database.h -> enum_class::State
+int8 target_state
+# if set to ture, the FSM will transit autotmatically to next state after finish this state
+bool enable_automatic_transition 
+---
+bool success

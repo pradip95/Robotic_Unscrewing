@@ -1,0 +1,1134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<IODevice xmlns="http://www.io-link.com/IODD/2010/10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.io-link.com/IODD/2010/10 IODD1.1.xsd">
+	<DocumentInfo copyright="SCHUNK GmbH" releaseDate="2021-11-16" version="V3.0.3" />
+	
+	<ProfileHeader>
+		<ProfileIdentification>IO Device Profile</ProfileIdentification>
+		<ProfileRevision>1.1</ProfileRevision>
+		<ProfileName>Device Profile for IO Devices</ProfileName>
+		<ProfileSource>IO-Link Consortium</ProfileSource>
+		<ProfileClassID>Device</ProfileClassID>
+		<ISO15745Reference>
+			<ISO15745Part>1</ISO15745Part>
+			<ISO15745Edition>1</ISO15745Edition>
+			<ProfileTechnology>IODD</ProfileTechnology>
+		</ISO15745Reference>
+	</ProfileHeader>
+	<ProfileBody>
+		<DeviceIdentity vendorId="765" vendorName="SCHUNK GmbH und Co. KG" deviceId="6">
+			<VendorText textId="TI_VendorText" />
+			<VendorUrl textId="TI_VendorUrl" />
+			<VendorLogo name="SCHUNK-logo.png" />    
+			<DeviceName textId="TI_DeviceName" />
+			<DeviceFamily textId="TI_DeviceFamily" />
+			<DeviceVariantCollection>
+				<DeviceVariant productId="1372735" deviceSymbol="schunk-egp-pic.png" deviceIcon="schunk-egp-icon.png">
+					<Name textId="TN_DeviceVar_EGP_040" />
+					<Description textId="TD_DeviceVar" />
+				</DeviceVariant>
+				<DeviceVariant productId="1383538" deviceSymbol="schunk-egp-pic.png" deviceIcon="schunk-egp-icon.png">
+					<Name textId="TN_DeviceVar_EGP_050" />
+					<Description textId="TD_DeviceVar" />
+				</DeviceVariant>
+				<DeviceVariant productId="1383545" deviceSymbol="schunk-egp-pic.png" deviceIcon="schunk-egp-icon.png">
+					<Name textId="TN_DeviceVar_EGP_064" />
+					<Description textId="TD_DeviceVar" />
+				</DeviceVariant>
+			</DeviceVariantCollection>
+		</DeviceIdentity>
+		<DeviceFunction>
+			<Features blockParameter="false" dataStorage="true" profileCharacteristic="48 49">
+				<!-- AccessLocks: -->	
+				<SupportedAccessLocks dataStorage="true" localParameterization="false" parameter="true" localUserInterface="false" /> 
+			</Features>
+			<DatatypeCollection>
+				<Datatype id="DT_Reserved3Bit" xsi:type="UIntegerT" bitLength="3"/>
+				<Datatype id="DT_Reserved5Bit" xsi:type="UIntegerT" bitLength="5"/> 
+				<Datatype id="DT_Reserved6Bit" xsi:type="UIntegerT" bitLength="6"/> 
+				<Datatype id="DT_Reserved8Bit" xsi:type="UIntegerT" bitLength="8"/>
+
+				<Datatype id="DT_SwitchState" xsi:type="BooleanT">
+					<SingleValue value="0">
+						<Name textId="TI_INACTIVE" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_ACTIVE" />
+					</SingleValue>
+				</Datatype>
+
+				<Datatype id="DT_StateName" xsi:type="BooleanT">
+					<SingleValue value="0">
+						<Name textId="TI_NO" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_YES" />
+					</SingleValue>
+				</Datatype>
+
+				<Datatype id="DT_ReferenceMode" xsi:type="BooleanT">
+					<SingleValue value="1">
+						<Name textId="TI_REF_INNER" />
+					</SingleValue>
+					<SingleValue value="0">
+						<Name textId="TI_REF_OUTER" />
+					</SingleValue>
+				</Datatype>
+				<Datatype id="DT_WorkpieceSelect" xsi:type="UIntegerT" bitLength="4">
+					<SingleValue value="0">
+						<Name textId="TI_None" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_Workpiece1" />
+					</SingleValue>
+					<SingleValue value="2">
+						<Name textId="TI_Workpiece2" />
+					</SingleValue>
+					<SingleValue value="3">
+						<Name textId="TI_Workpiece3" />
+					</SingleValue>
+					<SingleValue value="4">
+						<Name textId="TI_Workpiece4" />
+					</SingleValue>
+					<SingleValue value="5">
+						<Name textId="TI_Workpiece5" />
+					</SingleValue>
+					<SingleValue value="6">
+						<Name textId="TI_Workpiece6" />
+					</SingleValue>
+					<SingleValue value="7">
+						<Name textId="TI_Workpiece7" />
+					</SingleValue>
+					<SingleValue value="8">
+						<Name textId="TI_Workpiece8" />
+					</SingleValue>
+				</Datatype>
+
+				<Datatype id="DT_ForceSelect" xsi:type="UIntegerT" bitLength="3">
+					<SingleValue value="0">
+						<Name textId="TI_100PercentForce" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_75PercentForce" />
+					</SingleValue>
+					<SingleValue value="2">
+						<Name textId="TI_50PercentForce" />
+					</SingleValue>
+					<SingleValue value="3">
+						<Name textId="TI_25PercentForce" />
+					</SingleValue>
+					<SingleValue value="4">
+						<Name textId="TI_100PercentSoftForce" />
+					</SingleValue>
+					<SingleValue value="5">
+						<Name textId="TI_75PercentSoftForce" />
+					</SingleValue>
+					<SingleValue value="6">
+						<Name textId="TI_50PercentSoftForce" />
+					</SingleValue>
+					<SingleValue value="7">
+						<Name textId="TI_25PercentSoftForce" />
+					</SingleValue>
+					<!--SingleValue value="4">
+						<Name textId="TI_InvalidForce" />
+					</SingleValue-->
+
+				</Datatype>
+				<Datatype id="DT_GripperMode" xsi:type="BooleanT">
+					<SingleValue value="0">
+						<Name textId="TI_OuterGripper" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_InnerGripper" />
+					</SingleValue>
+				</Datatype>
+
+				<Datatype id="DT_CommandSelect" xsi:type="UIntegerT" bitLength="7">
+					<SingleValue value="1">
+						<Name textId="TI_CmdAck" />
+					</SingleValue>
+					<SingleValue value="2">
+						<Name textId="TI_CmdReference" />
+					</SingleValue>
+					<SingleValue value="7">
+						<Name textId="TI_CmdStroke" />
+					</SingleValue>
+					<SingleValue value="4">
+						<Name textId="TI_CmdGrip" />
+					</SingleValue>
+					<SingleValue value="3">
+						<Name textId="TI_CmdRelease" />
+					</SingleValue>
+					<SingleValue value="5">
+						<Name textId="TI_CmdPositionAbs" />
+					</SingleValue>
+					<SingleValue value="6">
+						<Name textId="TI_CmdPositionRel" />
+					</SingleValue>
+					<SingleValue value="8">
+						<Name textId="TI_CmdSoftStop" />
+					</SingleValue>
+					<SingleValue value="0">
+						<Name textId="TI_CmdFastStop" />
+					</SingleValue>
+				</Datatype>
+
+				<Datatype id="DT_CurrentStatus" xsi:type="UIntegerT" bitLength="3">
+					<SingleValue value="0">
+						<Name textId="TI_Error" />
+					</SingleValue>
+					<SingleValue value="1">
+						<Name textId="TI_Out_of_Specification" />
+					</SingleValue>
+					<SingleValue value="2">
+						<Name textId="TI_Maintenance_Required" />
+					</SingleValue>
+					<SingleValue value="3">
+						<Name textId="TI_Operate" />
+					</SingleValue>
+				</Datatype> 
+
+				<Datatype id="DT_Workpiece" xsi:type="RecordT" bitLength="80">
+					<RecordItem subindex="1" bitOffset="0">
+						<SimpleDatatype xsi:type="Float32T"/>
+						<Name textId="TI_DesiredPosition"/>
+					</RecordItem>
+					<RecordItem subindex="2" bitOffset="32">
+						<SimpleDatatype xsi:type="Float32T"/>
+						<Name textId="TI_Tolerance"/>
+					</RecordItem>
+					<RecordItem subindex="3" bitOffset="64">
+						<DatatypeRef datatypeId="DT_ForceSelect" />
+						<Name textId="TI_DesiredForce"/>
+					</RecordItem>
+					<RecordItem subindex="4" bitOffset="72">
+						<DatatypeRef datatypeId="DT_GripperMode" />
+						<Name textId="TI_GripperMode"/>
+					</RecordItem>					
+				</Datatype>
+			</DatatypeCollection>
+
+			<VariableCollection>
+				<StdVariableRef id="V_DirectParameters_1" />
+				<StdVariableRef id="V_DirectParameters_2" />
+				<StdVariableRef id="V_VendorName" defaultValue="SCHUNK GmbH und Co. KG" />
+				<StdVariableRef id="V_VendorText" defaultValue="schunk.com" />
+				<StdVariableRef id="V_ProductName" defaultValue="" />
+				<StdVariableRef id="V_ProductID" defaultValue="1459574" />
+				<StdVariableRef id="V_ProductText" defaultValue="Electric Gripper with IO-Link" />
+				<StdVariableRef id="V_SerialNumber" defaultValue="--------" />
+				<StdVariableRef id="V_HardwareRevision" defaultValue="" />
+				<StdVariableRef id="V_FirmwareRevision" defaultValue="" />
+     				<StdVariableRef id="V_ApplicationSpecificTag" defaultValue="***" />
+				
+				<StdVariableRef id="V_ProcessDataInput" />
+				<StdVariableRef id="V_ProcessDataOutput" />
+				<StdVariableRef id="V_DeviceAccessLocks"></StdVariableRef> 
+				<StdVariableRef id="V_SystemCommand">
+					<SingleValue value="80">
+						<Name textId="TN_SystemCommand_BM_UNLOCK_S"/>
+					</SingleValue>
+					<SingleValue value="81">
+						<Name textId="TN_SystemCommand_BM_UNLOCK_F"/>
+					</SingleValue>
+					<SingleValue value="82">
+						<Name textId="TN_SystemCommand_BM_UNLOCK_T"/>
+					</SingleValue>
+					<StdSingleValueRef value="130" /> <!--Restore Factory Settings -->
+					<SingleValue value="161">
+						<Name textId="TI_SysCmd_ResetCounter" /> 
+					</SingleValue> 
+					<SingleValue value="160">
+						<Name textId="TI_SysCmd_TeachWorkpiece" /> 
+					</SingleValue>
+				</StdVariableRef>
+
+				<StdVariableRef id="V_ErrorCount" /><!--32-->
+				<!-- 33-35 reserved -->
+				<StdVariableRef id="V_DeviceStatus" /><!--36-->
+				<StdVariableRef id="V_DetailedDeviceStatus" fixedLengthRestriction="4"/> <!--37-->
+
+
+
+				<!-- Workpiece Parameter -->
+				<Variable id="V_Workpiece1" index="101" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece1" /> </Variable>
+				<Variable id="V_Workpiece2" index="102" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece2" /> </Variable>
+				<Variable id="V_Workpiece3" index="103" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece3" /> </Variable>
+				<Variable id="V_Workpiece4" index="104" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece4" /> </Variable>
+				<Variable id="V_Workpiece5" index="105" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece5" /> </Variable>
+				<Variable id="V_Workpiece6" index="106" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece6" /> </Variable>
+				<Variable id="V_Workpiece7" index="107" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece7" /> </Variable>
+				<Variable id="V_Workpiece8" index="108" accessRights="rw"> <DatatypeRef datatypeId="DT_Workpiece" /> <Name textId="TI_Workpiece8" /> </Variable>
+
+				<Variable id="V_CurrentPosition" index="70" accessRights="ro" dynamic="true">
+					<Datatype xsi:type="Float32T" />
+					<Name textId="TI_CurrentPosition" />
+				</Variable>
+				<Variable id="V_InstantCurrent" index="72" accessRights="ro" dynamic="true">
+					<Datatype xsi:type="Float32T" />
+					<Name textId="TI_InstantCurrent" />
+				</Variable>
+
+				<Variable id="V_Temperature" index="80" accessRights="ro" dynamic="true">
+					<Datatype xsi:type="Float32T" />
+					<Name textId="TI_Temperature" />
+				</Variable>
+				<Variable id="V_Voltage" index="81" accessRights="ro" dynamic="true">
+					<Datatype xsi:type="Float32T" />
+					<Name textId="TI_Voltage" />
+				</Variable>
+
+				<Variable id="V_ReferenceMode" index="84" accessRights="rw">
+					<DatatypeRef datatypeId="DT_ReferenceMode" />
+					<Name textId="TI_ReferenceMode" />
+				</Variable>
+
+				<Variable id="V_Last_Error_code" index="200" accessRights="ro" dynamic="true"  defaultValue="0">
+					<Datatype xsi:type="UIntegerT" bitLength="8">
+
+						<SingleValue value="0"> <Name textId="TI_ERROR_NONE" /> </SingleValue>
+						<SingleValue value="88">  <Name textId="TI_ERROR_POSITION_BLOCKED" /> </SingleValue> 
+						<SingleValue value="113"> <Name textId="TI_ERROR_TEMP_HIGH" /> </SingleValue>
+						<SingleValue value="122"> <Name textId="TI_ERROR_LIFE_SIGN" /> </SingleValue>
+						<SingleValue value="116"> <Name textId="TI_ERROR_MOTOR_VOLTAGE_LOW" /> </SingleValue>
+						<SingleValue value="117"> <Name textId="TI_ERROR_MOTOR_VOLTAGE_HIGH" /> </SingleValue>
+						<SingleValue value="210"> <Name textId="TI_ERROR_CONFIG_MEMORY" /> </SingleValue>
+						<SingleValue value="223"> <Name textId="TI_ERROR_I2T" /> </SingleValue>
+						<SingleValue value="243"> <Name textId="TI_ERROR_BOOT" /> </SingleValue>
+						<SingleValue value="254"> <Name textId="TI_ERROR_UNKNOWN" /> </SingleValue> 
+					</Datatype>
+					<Name textId="TI_Last_Error_code" />
+				</Variable>
+				<Variable id="V_CycleCounter" index="201" accessRights="ro" dynamic="true" defaultValue="0">
+					<Datatype xsi:type="UIntegerT" bitLength="32" />
+					<Name textId="TI_CycleCounter" />
+				</Variable>
+				<Variable id="V_ImpulseCounter" index="202" accessRights="ro" dynamic="true" defaultValue="0">
+					<Datatype xsi:type="UIntegerT" bitLength="32" />
+					<Name textId="TI_ImpulseCounter" />
+				</Variable>
+				<Variable id="V_MaintenanceCounter" index="203" accessRights="ro" dynamic="true" defaultValue="0">
+					<Datatype xsi:type="IntegerT" bitLength="32" />
+					<Name textId="TI_MaintenanceCounter" />
+				</Variable>
+
+
+				<Variable id="V_MaintenanceInterval" index="204" accessRights="rw" dynamic="true">
+					<Datatype xsi:type="IntegerT" bitLength="32" />
+					<Name textId="TI_MaintenanceCounterIntervall" />
+				</Variable>	
+
+				<Variable id="V_MaxHubValue" index="205" accessRights="ro" dynamic="true">
+					<Datatype xsi:type="Float32T"  />
+					<Name textId="TI_MaxHubValue" />
+				</Variable>		
+
+				<Variable id="V_HWSwitch1" index="174" accessRights="ro" dynamic="true" defaultValue="0">
+					<DatatypeRef datatypeId="DT_SwitchState" />
+					<Name textId="TI_HWSwitch1" />
+				</Variable>	
+				<Variable id="V_HWSwitch2" index="175" accessRights="ro" dynamic="true" defaultValue="0">
+					<DatatypeRef datatypeId="DT_SwitchState" />
+					<Name textId="TI_HWSwitch2" />
+				</Variable>
+
+				<!-- optional, maximum string length is manufacturer specific -->
+				<Variable index="17341" accessRights="wo" id="V_FW-Password">
+					<Datatype xsi:type="StringT" encoding="UTF-8" fixedLength="16"/>
+					<Name textId="TN_FW-Password"/>
+				</Variable>
+				<!-- required for firmware update, maximum string length is manufacturer specific -->
+				<Variable index="17342" accessRights="ro" id="V_HW_ID_Key" defaultValue="IOLink V1.0">
+					<Datatype xsi:type="StringT" encoding="UTF-8" fixedLength="64"/>
+					<Name textId="TN_HW_ID_Key"/>
+				</Variable>
+				<!-- required for firmware update -->
+				<Variable index="17343" accessRights="ro" id="V_BootmodeStatus">
+					<Datatype xsi:type="UIntegerT" bitLength="8">
+						<SingleValue value="0">
+							<Name textId="TN_BootmodeStatus_Inactive"/>
+						</SingleValue>
+						<SingleValue value="1">
+							<Name textId="TN_BootmodeStatus_Active"/>
+						</SingleValue>
+					</Datatype>
+					<Name textId="TN_BootmodeStatus"/>
+				</Variable>				
+			</VariableCollection>
+
+			<!-- Process Data  PGN -> Master -->  	
+
+
+			<ProcessDataCollection>
+				<ProcessData id="PD_ProcessData">
+
+
+
+
+
+					<!-- Process Data IN PGN -> Master -->  	
+
+
+					<ProcessDataIn id="PD_ProcessDataIn" bitLength="64">
+						<Datatype xsi:type="RecordT" bitLength="64" subindexAccessSupported="false">
+
+							<RecordItem subindex="1" bitOffset="63">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_ProcessingCmd" />
+							</RecordItem>
+							<RecordItem subindex="2" bitOffset="62">
+								<DatatypeRef datatypeId="DT_StateName" />
+								<Name textId="TI_Blocked" />
+							</RecordItem>
+
+							<RecordItem subindex="3" bitOffset="61">
+								<DatatypeRef datatypeId="DT_StateName" />
+								<Name textId="TI_EndStop" />
+							</RecordItem>
+
+							<RecordItem subindex="4" bitOffset="60">
+								<DatatypeRef datatypeId="DT_StateName" />
+								<Name textId="TI_Success" />
+							</RecordItem>
+
+							<RecordItem subindex="5" bitOffset="59">
+								<DatatypeRef datatypeId="DT_StateName" />
+								<Name textId="TI_Referenced" />
+							</RecordItem>
+
+							<RecordItem subindex="6" bitOffset="56">
+								<DatatypeRef datatypeId="DT_CurrentStatus" />
+								<Name textId="TI_ActStatus" />
+							</RecordItem>				
+
+							<!-- 1-8 WorkPieces -->
+							<RecordItem subindex="7" bitOffset="48">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece1" />
+							</RecordItem>
+							<RecordItem subindex="8" bitOffset="49">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece2" />
+							</RecordItem>
+							<RecordItem subindex="9" bitOffset="50">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece3" />
+							</RecordItem>
+							<RecordItem subindex="10" bitOffset="51">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece4" />
+							</RecordItem>
+							<RecordItem subindex="11" bitOffset="52">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece5" />
+							</RecordItem>
+							<RecordItem subindex="12" bitOffset="53">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece6" />
+							</RecordItem>
+							<RecordItem subindex="13" bitOffset="54">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece7" />
+							</RecordItem>
+							<RecordItem subindex="14" bitOffset="55">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_Workpiece8" />
+							</RecordItem>
+
+							<!-- HW 1/2 Switch --> 
+							<RecordItem subindex="15" bitOffset="42">
+								<DatatypeRef datatypeId="DT_Reserved6Bit" />
+								<Name textId="TI_Reserved" />
+							</RecordItem>
+							<RecordItem subindex="16" bitOffset="41">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_HWSwitch2" />
+							</RecordItem>
+							<RecordItem subindex="17" bitOffset="40">
+								<DatatypeRef datatypeId="DT_SwitchState" />
+								<Name textId="TI_HWSwitch1" />
+							</RecordItem>
+							<RecordItem subindex="18" bitOffset="32">
+								<DatatypeRef datatypeId="DT_Reserved8Bit" />
+								<Name textId="TI_Reserved" />
+							</RecordItem>
+
+							<!-- current position --> 
+							<RecordItem subindex="19" bitOffset="0">
+								<SimpleDatatype xsi:type="Float32T" />
+								<Name textId="TI_CurrentPosition" />
+							</RecordItem>	
+						</Datatype> 
+						<Name textId="TI_ProcessDataIn" />
+					</ProcessDataIn>
+
+
+					<!-- Process Data Out Master -> PGN --> 
+
+					<ProcessDataOut id="PD_ProcessDataOut" bitLength="64">
+
+						<Datatype xsi:type="RecordT" bitLength="64" subindexAccessSupported="false">
+
+							<RecordItem subindex="1" bitOffset="63">
+								<SimpleDatatype xsi:type="BooleanT" />
+								<Name textId="TI_ExecCmd" />
+							</RecordItem>
+
+							<RecordItem subindex="2" bitOffset="56">
+								<DatatypeRef datatypeId="DT_CommandSelect" />
+								<Name textId="TI_Command" />
+							</RecordItem> 
+
+							<RecordItem subindex="3" bitOffset="52">
+								<DatatypeRef datatypeId="DT_WorkpieceSelect" />
+								<Name textId="TI_WorkpieceNumber" />
+							</RecordItem>
+
+							<RecordItem subindex="4" bitOffset="49">
+								<DatatypeRef datatypeId="DT_Reserved3Bit" />
+								<Name textId="TI_Reserved" />
+							</RecordItem>
+
+							<RecordItem subindex="5" bitOffset="48">
+								<DatatypeRef datatypeId="DT_GripperMode" />
+								<Name textId="TI_GripMode" />
+							</RecordItem>
+
+							<!-- Force Byte -->	
+
+							<RecordItem subindex="6" bitOffset="43">
+								<DatatypeRef datatypeId="DT_Reserved5Bit" />
+								<Name textId="TI_Reserved" />
+							</RecordItem>
+
+							<RecordItem subindex="7" bitOffset="40">
+								<DatatypeRef datatypeId="DT_ForceSelect" />
+								<Name textId="TI_DesiredForce" />
+							</RecordItem>
+
+							<!-- Force Byte -->	
+
+							<!--	 -->
+							<RecordItem subindex="8" bitOffset="32">
+								<DatatypeRef datatypeId="DT_Reserved8Bit" />
+								<Name textId="TI_Reserved" />
+							</RecordItem>
+
+							<RecordItem subindex="9" bitOffset="0">
+								<SimpleDatatype xsi:type="Float32T" />
+								<Name textId="TI_DesiredPosition" />
+							</RecordItem>			
+
+						</Datatype>
+						<Name textId="TI_ProcessDataOut" />
+					</ProcessDataOut> 
+
+				</ProcessData>
+			</ProcessDataCollection>
+
+			<ErrorTypeCollection>
+				<StdErrorTypeRef additionalCode="17"/> <!-- This device supports the standard error type "Index not available" --> 
+				<StdErrorTypeRef additionalCode="18"/> <!-- This device supports the standard error type "Subindex not available" --> 
+				<StdErrorTypeRef additionalCode="33"/> <!-- This device supports the standard error type "Index not writeable" --> 
+			</ErrorTypeCollection>
+			<EventCollection>
+				<StdEventRef code="4096" /> <!-- Unkown error -->
+				<StdEventRef code="16384" /> <!-- temperature error -->
+				<StdEventRef code="16912" /> <!-- temperature high error -->
+				<StdEventRef code="20752" /> <!-- over voltage -->
+				<StdEventRef code="20753" /> <!-- under voltage -->
+				<StdEventRef code="35906" /> <!-- maintenance requried -->
+				<!--StdEventRef code="20754" /--> <!-- ClassB voltage -->
+				<StdEventRef code="25376" /> <!-- Parameter error -->
+				<Event code="6148" type="Notification"> <!-- 0x1804) -->
+					<Name textId="TI_INFO_UNKNOWN_COMMAND"/>
+					<Description textId="TI_INFO_UNKNOWN_COMMAND"/>
+				</Event>
+				<Event code="6145" type="Warning"> <!-- 0x1801) -->
+					<Name textId="TI_WARNING_BOOT_MODE"/>
+					<Description textId="TI_WARNING_BOOT_MODE"/>
+				</Event>
+				<Event code="6150" type="Notification"> <!-- 0x1806) -->
+					<Name textId="TI_INFO_NOT_REFERENCED"/>
+					<Description textId="TI_INFO_NOT_REFERENCED"/>
+				</Event>
+				<Event code="6178" type="Warning"> <!-- 0x1822) -->
+					<Name textId="TI_WARNING_POSITION_NOT_REACHABLE"/>
+					<Description textId="TI_WARNING_POSITION_NOT_REACHABLE"/>
+				</Event>
+				<Event code="6260" type="Warning"> <!-- 0x1874) -->
+					<Name textId="TI_ERROR_MOTOR_VOLTAGE_LOW"/>
+					<Description textId="TI_ERROR_MOTOR_VOLTAGE_LOW"/>
+				</Event>
+				<Event code="6261" type="Warning"> <!-- 0x1875) -->
+					<Name textId="TI_ERROR_MOTOR_VOLTAGE_HIGH"/>
+					<Description textId="TI_ERROR_MOTOR_VOLTAGE_HIGH"/>
+				</Event>
+				<Event code="6361" type="Error"> <!-- 0x18D9 -->
+					<Name textId="TI_ERROR_FAST_STOP"/>
+					<Description textId="TI_ERROR_FAST_STOP"/>
+				</Event>
+				<Event code="6354" type="Error"> <!-- 0x18D2 -->
+					<Name textId="TI_ERROR_CONFIG_MEMORY"/>
+					<Description textId="TI_ERROR_CONFIG_MEMORY"/>
+				</Event>
+				<Event code="6366" type="Error"> <!-- 0x18DE -->
+					<Name textId="TI_ERROR_CURRENT"/>
+					<Description textId="TI_ERROR_CURRENT"/>
+				</Event>		 
+				<Event code="6266" type="Error"> <!-- 0x187A -->
+					<Name textId="TI_ERROR_LIFE_SIGN"/>
+					<Description textId="TI_ERROR_LIFE_SIGN"/>
+				</Event>
+				<Event code="6387" type="Error"> <!-- 0x18F3 -->
+					<Name textId="TI_ERROR_BOOT"/>
+					<Description textId="TI_ERROR_BOOT"/>
+				</Event>
+				<Event code="6230" type="Warning"> <!-- 0x1856 -->
+					<Name textId="TI_WARN_FORCE_OUT_OF_SPEC"/>
+					<Description textId="TI_WARN_FORCE_OUT_OF_SPEC"/>
+				</Event>		 			
+				<Event code="6231" type="Warning"> <!-- 0x1857 -->
+					<Name textId="TI_WARN_WORKPIECE_ID_OUT_OF_SPEC"/>
+					<Description textId="TI_WARN_WORKPIECE_ID_OUT_OF_SPEC"/>
+				</Event>	
+				<Event code="6232" type="Error"> <!-- 0x1858 -->
+					<Name textId="TI_ERROR_POSITION_BLOCKED"/>
+					<Description textId="TI_ERROR_POSITION_BLOCKED"/>
+				</Event>	
+
+			</EventCollection>		 
+			<UserInterface>
+				<MenuCollection>
+					<!--Identification Menu-->
+					<Menu id="ME_Identification">
+						<Name textId="TI_ME_Identification" />
+						<VariableRef variableId="V_VendorName" />
+						<VariableRef variableId="V_VendorText" />
+						<VariableRef variableId="V_ProductName" />
+						<VariableRef variableId="V_ProductID" />
+						<VariableRef variableId="V_ProductText" />
+						<VariableRef variableId="V_SerialNumber" />
+						<VariableRef variableId="V_HardwareRevision" />
+						<VariableRef variableId="V_FirmwareRevision" />
+						<VariableRef variableId="V_ApplicationSpecificTag" />
+
+					</Menu>
+					<!--Parameter Menu-->
+					<Menu id="ME_Parameter">
+						<Name textId="TI_ME_Parameter" />
+						<!--	<MenuRef menuId="ME_Access_Locks" /> -->
+						<MenuRef menuId="ME_Access_Locks" /> 
+						<MenuRef menuId="ME_SysCommands" />
+						<MenuRef menuId="ME_Common" />
+						<MenuRef menuId="ME_Workpiece1" />
+						<MenuRef menuId="ME_Workpiece2" />
+						<MenuRef menuId="ME_Workpiece3" />
+						<MenuRef menuId="ME_Workpiece4" />
+						<MenuRef menuId="ME_Workpiece5" />
+						<MenuRef menuId="ME_Workpiece6" />
+						<MenuRef menuId="ME_Workpiece7" />
+						<MenuRef menuId="ME_Workpiece8" />
+					</Menu>
+
+					<!--- Access Locks-->
+					<Menu id="ME_Access_Locks">
+						<Name textId="TI_ME_Access_Locks" />
+						<RecordItemRef variableId="V_DeviceAccessLocks" subindex="1" />
+						<RecordItemRef variableId="V_DeviceAccessLocks" subindex="2" />
+					</Menu>
+
+					<!--- Commands-->		  
+					<Menu id="ME_SysCommands">
+						<Name textId="TI_SysCommands" />
+						<VariableRef variableId="V_SystemCommand">
+							<Button buttonValue="130">
+								<Description textId="TI_SysCmd_FactoryDefaults" />
+								<ActionStartedMessage textId="TI_SysCmd_FactoryDefaultsStart" />
+							</Button>
+						</VariableRef>
+						<VariableRef variableId="V_SystemCommand">
+							<Button buttonValue="161">
+								<Description textId="TI_SysCmd_ResetCounter" />
+								<ActionStartedMessage textId="TI_SysCmd_ResetCounterStart" />
+							</Button>
+						</VariableRef>
+						<VariableRef variableId="V_SystemCommand">
+							<Button buttonValue="160">
+								<Description textId="TI_SysCmd_TeachWorkpiece" />
+								<ActionStartedMessage textId="TI_SysCmd_TeachWorkpieceSave" />
+							</Button>
+						</VariableRef>						
+					</Menu>
+					<Menu id="ME_Common">
+						<Name textId="TI_Common" />
+						<VariableRef variableId="V_MaintenanceInterval" />
+						<VariableRef variableId="V_ReferenceMode" />	
+						<VariableRef variableId="V_MaxHubValue" unitCode="1013" />	
+					</Menu>
+					<Menu id="ME_Workpiece1">
+						<Name textId="TI_Workpiece1" />
+						<RecordItemRef variableId="V_Workpiece1" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece1" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece1" subindex="3"/>	
+						<RecordItemRef variableId="V_Workpiece1" subindex="4"/><!--displayFormat-->
+					</Menu>	
+					<Menu id="ME_Workpiece2">
+						<Name textId="TI_Workpiece2" />
+						<RecordItemRef variableId="V_Workpiece2" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece2" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece2" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece2" subindex="4"/>
+					</Menu>
+					<Menu id="ME_Workpiece3">
+						<Name textId="TI_Workpiece3" />
+						<RecordItemRef variableId="V_Workpiece3" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece3" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece3" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece3" subindex="4"/>
+					</Menu>
+					<Menu id="ME_Workpiece4">
+						<Name textId="TI_Workpiece4" />
+						<RecordItemRef variableId="V_Workpiece4" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece4" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece4" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece4" subindex="4"/>
+					</Menu>
+					<Menu id="ME_Workpiece5">
+						<Name textId="TI_Workpiece5" />
+						<RecordItemRef variableId="V_Workpiece5" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece5" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece5" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece5" subindex="4"/>
+					</Menu>
+					<Menu id="ME_Workpiece6">
+						<Name textId="TI_Workpiece6" />
+						<RecordItemRef variableId="V_Workpiece6" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece6" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece6" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece6" subindex="4"/>
+					</Menu>
+					<Menu id="ME_Workpiece7">
+						<Name textId="TI_Workpiece7" />
+						<RecordItemRef variableId="V_Workpiece7" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece7" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece7" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece7" subindex="4"/>
+					</Menu>
+
+					<Menu id="ME_Workpiece8">
+						<Name textId="TI_Workpiece8" />
+						<RecordItemRef variableId="V_Workpiece8" subindex="1" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece8" subindex="2" unitCode="1013" />
+						<RecordItemRef variableId="V_Workpiece8" subindex="3"/>
+						<RecordItemRef variableId="V_Workpiece8" subindex="4"/>
+					</Menu>
+
+					<!--Observation Menu-->
+					<Menu id="ME_Observe">
+						<Name textId="TI_ME_Observe" />
+						<VariableRef variableId="V_CurrentPosition" unitCode="1013" displayFormat="Dec.3" />
+						<VariableRef variableId="V_InstantCurrent" unitCode="1209" displayFormat="Dec.1" />
+						<VariableRef variableId="V_Voltage" unitCode="1240" displayFormat="Dec.1" />
+						<VariableRef variableId="V_Temperature" unitCode="1001" displayFormat="Dec.2" />
+						<VariableRef variableId="V_HWSwitch1" />
+						<VariableRef variableId="V_HWSwitch2" />
+					</Menu>
+					<!--Diagnosis Menu-->
+					<Menu id="ME_Diagnosis">
+						<Name textId="TI_Diagnosis" />
+						<MenuRef menuId="ME_Device" />
+						<MenuRef menuId="ME_Counter" />
+					</Menu>
+					<!--- Device-->
+					<Menu id="ME_Device">
+						<Name textId="TI_ME_Device" />
+						<VariableRef variableId="V_DeviceStatus" />
+						<VariableRef variableId="V_DetailedDeviceStatus" />		
+						<VariableRef variableId="V_Last_Error_code" />			
+					</Menu>
+					<!--- Counter-->
+					<Menu id="ME_Counter">
+						<Name textId="TI_ME_Counter" />
+						<VariableRef variableId="V_ErrorCount" />
+						<VariableRef variableId="V_CycleCounter" />
+						<VariableRef variableId="V_ImpulseCounter" />
+						<VariableRef variableId="V_MaintenanceCounter" />
+					</Menu>
+				</MenuCollection>
+
+				<ObserverRoleMenuSet>
+					<IdentificationMenu menuId="ME_Identification" />
+					<ParameterMenu menuId="ME_Parameter" />
+					<ObservationMenu menuId="ME_Observe" />
+					<DiagnosisMenu menuId="ME_Diagnosis" />
+				</ObserverRoleMenuSet>
+				<MaintenanceRoleMenuSet>
+					<IdentificationMenu menuId="ME_Identification" />
+					<ParameterMenu menuId="ME_Parameter" />
+					<ObservationMenu menuId="ME_Observe" />
+					<DiagnosisMenu menuId="ME_Diagnosis" />
+				</MaintenanceRoleMenuSet>
+				<SpecialistRoleMenuSet>
+					<IdentificationMenu menuId="ME_Identification" />
+					<ParameterMenu menuId="ME_Parameter" />
+					<ObservationMenu menuId="ME_Observe" />
+					<DiagnosisMenu menuId="ME_Diagnosis" />
+				</SpecialistRoleMenuSet>
+			</UserInterface>
+		</DeviceFunction>
+	</ProfileBody>
+	<CommNetworkProfile xsi:type="IOLinkCommNetworkProfileT" iolinkRevision="V1.1">
+		<TransportLayers>
+			<PhysicalLayer minCycleTime="2000" sioSupported="false" bitrate="COM2" mSequenceCapability="43">
+				<Connection xsi:type="M12-5ConnectionT">
+					<ProductRef productId="1372735" />
+					<Wire1 />
+					<Wire2 color="WH" function="NC" />
+					<Wire3 />
+					<Wire4 />
+					<Wire5 color="GY" function="NC" />
+				</Connection>
+				<Connection xsi:type="M12-5ConnectionT">
+					<ProductRef productId="1383538" />
+					<Wire1 />
+					<Wire2 color="WH" function="NC" />
+					<Wire3 />
+					<Wire4 />
+					<Wire5 color="GY" function="NC" />
+				</Connection>
+				<Connection xsi:type="M12-5ConnectionT">
+					<ProductRef productId="1383545" />
+					<Wire1 />
+					<Wire2 color="WH" function="NC" />
+					<Wire3 />
+					<Wire4 />
+					<Wire5 color="GY" function="NC" />
+				</Connection>
+			</PhysicalLayer>
+		</TransportLayers>
+		<Test>
+			<Config1 index="225" testValue="0x01" />
+			<Config2 index="16383" testValue="0x01" />
+			<Config3 index="226" testValue="0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39" />
+			<Config7 index="224">
+				<EventTrigger appearValue="1" disappearValue="0"/>
+				<EventTrigger appearValue="183" disappearValue="184"/>
+			</Config7>
+		</Test>
+	</CommNetworkProfile>
+	<ExternalTextCollection>
+		<PrimaryLanguage xml:lang="en">
+
+	<!-- Identification -->	
+	  <Text id="TI_ME_Identification" value="Identification data" />
+			
+			<Text id="TI_VendorText" value="SCHUNK GmbH" />
+			<Text id="TI_VendorUrl" value="http://www.schunk.com" />
+			<Text id="TI_DeviceFamily" value="grippers" />
+			<Text id="TI_DeviceName" value="EGP IO-Link" />
+			<Text id="TN_DeviceVar_EGP_040" value="EGP 40-N-N-IOL" />
+			<Text id="TN_DeviceVar_EGP_050" value="EGP 50-N-N-IOL" />
+			<Text id="TN_DeviceVar_EGP_064" value="EGP 64-N-N-IOL" />
+			<Text id="TD_DeviceVar" value="Gripper EGP IO-Link" />
+
+<!-- Observation -->	
+			<!--Current Position-->
+			<Text id="TI_InstantCurrent" value="Motor Current" />
+			<Text id="TI_Voltage" value="Actor Voltage" />
+			<Text id="TI_Temperature" value="Temperature" />
+			<Text id="TI_HWSwitch1" value="HW Switch S1" />
+			<Text id="TI_HWSwitch2" value="HW Switch S2" />
+
+<!--Prozess Data -->
+	<!-- PROZESS-Data IN-->
+	<Text id="TI_ProcessDataIn" value="Process Data In" />	  
+
+	<Text id="TI_ProcessingCmd" value="Process Command" />
+	<Text id="TI_Blocked" value="Blocked" />
+	<Text id="TI_EndStop" value="End Stop" />
+	<Text id="TI_Success" value="Success" />
+	<Text id="TI_Referenced" value="Referenced" />
+	<!-- CurrentState  -->
+	<Text id="TI_ActStatus" value="Status" />
+
+	<Text id="TI_Error" value="Error" />
+	<Text id="TI_Operate" value="Operate" />
+	<Text id="TI_Maintenance_Required" value="Maintenance Required" />
+	<Text id="TI_Out_of_Specification" value="Out of Specification" />
+	<!-- Workpiece -->	
+	<Text id="TI_Workpiece1" value="Workpiece1" />
+	<Text id="TI_Workpiece2" value="Workpiece2" />
+	<Text id="TI_Workpiece3" value="Workpiece3" />
+	<Text id="TI_Workpiece4" value="Workpiece4" />
+	<Text id="TI_Workpiece5" value="Workpiece5" />
+	<Text id="TI_Workpiece6" value="Workpiece6" />
+	<Text id="TI_Workpiece7" value="Workpiece7" />
+	<Text id="TI_Workpiece8" value="Workpiece8" />
+
+	<Text id="TI_CurrentPosition" value="Position" />
+
+	<!-- PROZESS-Data OUT-->			
+	<Text id="TI_ProcessDataOut" value="Process Data Out" />
+
+	<Text id="TI_ExecCmd" value="Execute Command" />
+	<!-- Command -->
+	<Text id="TI_Command" value="Command" />
+	<Text id="TI_CmdGrip" value="Grip" />
+	<Text id="TI_CmdRelease" value="Release" />
+	<Text id="TI_CmdPositionAbs" value="Position (absolut)" />
+	<Text id="TI_CmdPositionRel" value="Position (relativ)" />
+	<Text id="TI_CmdAck" value="Acknowledge" />
+	<Text id="TI_CmdFastStop" value="FastStop" />
+	<Text id="TI_CmdReference" value="Reference" />
+	<Text id="TI_CmdStroke" value="measure Stroke" />
+	<Text id="TI_CmdSoftStop" value="Stop" />
+	<!-- Workpiecenumber -->
+	<Text id="TI_WorkpieceNumber" value="Workpiece Number" />
+	<Text id="TI_None" value="None" />	
+	<!--Grip Mode-->
+	<Text id="TI_GripMode" value="Gripper direction" />		
+	<Text id="TI_OuterGripper" value="Outer Type" />
+	<Text id="TI_InnerGripper" value="Inner Type" />		
+	<!-- Desired Force -->
+	<Text id="TI_DesiredForce" value="Gripping Force" />
+	<Text id="TI_25PercentForce" value="25[%] Force" />
+	<Text id="TI_50PercentForce" value="50[%] Force" />
+	<Text id="TI_75PercentForce" value="75[%] Force" />
+	<Text id="TI_100PercentForce" value="100[%] Force" />
+	<Text id="TI_25PercentSoftForce" value="25[%] Softgrip" />
+	<Text id="TI_50PercentSoftForce" value="50[%] Softgrip" />
+	<Text id="TI_75PercentSoftForce" value="75[%] Softgrip" />
+	<Text id="TI_100PercentSoftForce" value="100[%] Softgrip" />
+	<Text id="TI_DesiredPosition" value="Target Position" />
+
+
+
+<!--Diagnosis-->
+		<Text id="TI_Diagnosis" value="Diagnose" />
+		<!--Device Status-->
+		<Text id="TI_ME_Device" value="Device Status" />
+		<!--Detailed Device Status-->
+		<Text id="TI_Last_Error_code" value="Last error" />
+		<!--Monitoring-->
+		<Text id="TI_ME_Counter" value="Monitoring" />
+		<!---->
+		<Text id="TI_CycleCounter" value="Cycle counter" />
+		<Text id="TI_ImpulseCounter" value="Impulse couter" />
+		<Text id="TI_MaintenanceCounter" value="Maintenance counter" />	
+
+		<!--Parameter-->
+		<Text id="TI_ME_Parameter" value="Parameter data" />
+		<Text id="TI_ME_Access_Locks" value="Access Locks" />
+
+		<!--Commands-->
+		<Text id="TI_SysCommands" value="Commands" />
+		<Text id="TI_SysCmd_ResetCounter" value="Reset Maintenance Counter" />
+		<Text id="TI_SysCmd_TeachWorkpiece" value="Teach Workpiece" />
+
+		<!--Common-->
+		<Text id="TI_Common" value="Common" />
+
+
+		<Text id="TI_MaintenanceCounterIntervall" value="Maintenance Intervall" />
+		<Text id="TI_MaxHubValue" value="Maxium stroke" />
+		<Text id="TI_ReferenceMode" value="Referencing Direction" />	  
+		<Text id="TI_REF_INNER" value="Reference inside" />
+		<Text id="TI_REF_OUTER" value="Reference outside" />	
+		<!--Workpiece-->
+		<Text id="TI_GripperMode" value="Gripper Direction" />
+		<Text id="TI_Tolerance" value="Tolerance [+/-]" />
+
+		<!--general -->
+		<Text id="TI_ACTIVE" value="active" />
+		<Text id="TI_INACTIVE" value="inactive" />
+		<Text id="TI_YES" value="yes" />
+		<Text id="TI_NO" value="no" />
+		<Text id="TI_Reserved" value="reserved" />
+
+
+
+		<Text id="TI_ME_Observe" value="Online" />
+
+		<Text id="TI_SysCmd_FactoryDefaults" value="Reset parameters to factory defaults" />
+		<Text id="TI_SysCmd_FactoryDefaultsStart" value="Set factory defaults" />
+		<Text id="TI_SysCmd_ResetCounterStart" value="Counter reset" />
+
+		<Text id="TI_SysCmd_TeachWorkpieceSave" value="workpiece updated" />
+
+		<!-- firmware update process -->
+		<Text id="TN_SystemCommand_BM_UNLOCK_S" value="Start unlocking sequence"/>
+		<Text id="TN_SystemCommand_BM_UNLOCK_F" value="Unlocking command 1"/>
+		<Text id="TN_SystemCommand_BM_UNLOCK_T" value="Unlocking command 2"/>
+		<Text id="TN_HW_ID_Key" value="Hardware Identification Key"/>
+		<Text id="TN_FW-Password" value="Firmware password"/>
+		<Text id="TN_BootmodeStatus" value="Bootmode status"/>
+		<Text id="TN_BootmodeStatus_Inactive" value="Boot loader is inactive"/>
+		<Text id="TN_BootmodeStatus_Active" value="Boot loader is active"/>
+		<!-- firmware update process -->
+
+		<Text id="TI_ERROR_NONE" value="No error" />
+		<Text id="TI_INFO_NOT_REFERENCED" value="INFO NOT REFERENCED" />
+		<Text id="TI_WARNING_POSITION_NOT_REACHABLE" value="WARNING POSITION NOT REACHABLE" />
+		<Text id="TI_WARNING_BOOT_MODE" value="WARNING BOOT MODE" />
+		<Text id="TI_INFO_UNKNOWN_COMMAND" value="INFO UNKNOWN COMMAND" />
+		<Text id="TI_ERROR_TEMP_HIGH" value="ERROR TEMP HIGH" />
+		<Text id="TI_ERROR_MOTOR_VOLTAGE_LOW" value="ERROR MOTOR VOLTAGE LOW" />
+		<Text id="TI_ERROR_MOTOR_VOLTAGE_HIGH" value="ERROR MOTOR VOLTAGE HIGH" />
+		<Text id="TI_ERROR_FAST_STOP" value="FAST STOP" />
+		<Text id="TI_ERROR_CONFIG_MEMORY" value="ERROR CONFIG MEMORY" />	  
+		<Text id="TI_ERROR_CURRENT" value="ERROR CURRENT" />
+		<Text id="TI_ERROR_LIFE_SIGN" value="ERROR LIFE_SIGN" />
+		<Text id="TI_ERROR_I2T" value="ERROR I²T" />
+		<Text id="TI_ERROR_BOOT" value="ERROR BOOT NOT SUCCESSFUL" />
+		<Text id="TI_ERROR_POSITION_BLOCKED" value="POSITION BLOCKED" />
+		<Text id="TI_WARN_FORCE_OUT_OF_SPEC" value="WARNING FORCESETTING OUT OF SPEC" />
+		<Text id="TI_WARN_WORKPIECE_ID_OUT_OF_SPEC" value="WARNING WORKPIECEID SETTING OUT OF SPEC" />
+
+		<Text id="TI_ERROR_UNKNOWN" value="ERROR UNKNOWN" />
+
+		<!--Text id="TI_INFO_LIMIT_MAX" value="INFO LIMIT MAX" />
+	  <Text id="TI_INFO_LIMIT_LOW" value="INFO LIMIT LOW" />
+	  <Text id="TI_INFO_WRONG_PARAMETER" value="INFO WRONG PARAMETER" /-->
+	  <!--Text id="TI_ERROR_TEMP_LOW" value="ERROR TEMP LOW" /-->
+	  <!--Text id="TI_ERROR_LOGIC_VOLTAGE_LOW" value="ERROR LOGIC VOLTAGE LOW" /-->
+	  <!--Text id="TI_ERROR_LOGIC_VOLTAGE_HIGH" value="ERROR LOGIC VOLTAGE HIGH" /-->
+	  <!--Text id="TI_ERROR_POWER" value="ERROR POWER CLASS B" /-->
+	  <!--Text id="TI_ERROR_SERVICE" value="ERROR SERVICE" /-->
+	  <!--Text id="TI_ERROR_INITIALIZE" value="ERROR INITIALIZE" /-->
+	  <!--Text id="TI_ERROR_INTERNAL" value="ERROR INTERNAL" /-->
+	  <!--  <Text id="TI_ME_Access_Locks" value="Access Locks" /> -->
+
+
+
+
+
+
+  </PrimaryLanguage>
+
+  <Language xml:lang="de">
+	  <!-- Identification -->	
+	  <Text id="TI_ME_Identification" value="Identifikations Daten" />
+
+	  <Text id="TI_VendorText" value="SCHUNK GmbH und CO. KG" /> <!-- Vendor (GUI-Header) --> 
+
+  	  <Text id="TN_DeviceVar_EGP_040" value="EGP 40-N-N-IOL" />
+	  <Text id="TN_DeviceVar_EGP_050" value="EGP 50-N-N-IOL" />
+	  <Text id="TN_DeviceVar_EGP_064" value="EGP 64-N-N-IOL" />
+	  <Text id="TD_DeviceVar" value="Greifer EGP IO-Link" />
+
+<!-- Observation -->	
+			<!--Current Position-->
+			<Text id="TI_InstantCurrent" value="Motorstrom" />
+			<Text id="TI_Voltage" value="Aktorspannung" />
+			<Text id="TI_Temperature" value="Temperatur" />
+			<Text id="TI_HWSwitch1" value="HW Schalter S1" />
+			<Text id="TI_HWSwitch2" value="HW Schalter S2" />
+<!--Prozess Data -->
+	<!-- PROZESS-Data IN-->
+	<Text id="TI_ProcessDataIn" value="Process Data In" />	  
+
+	<Text id="TI_ProcessingCmd" value="Prozessbefehl" />
+	<Text id="TI_Blocked" value="Blockiert" />
+	<Text id="TI_EndStop" value="Endanschlag" />
+	<Text id="TI_Success" value="Erfolg" />
+	<Text id="TI_Referenced" value="Referenziert" />
+	<!-- CurrentState  -->
+	<Text id="TI_ActStatus" value="Status" />
+
+	<Text id="TI_Error" value="Fehler" />
+	<Text id="TI_Operate" value="Betriebsbereit" />
+	<Text id="TI_Maintenance_Required" value="Wartung erforderlich" />
+	<Text id="TI_Out_of_Specification" value="Ausserhalb der Spezifikation" />
+	<!-- Workpiece -->	
+	<Text id="TI_Workpiece1" value="Werkst&#252;ck1" />
+	<Text id="TI_Workpiece2" value="Werkst&#252;ck2" />
+	<Text id="TI_Workpiece3" value="Werkst&#252;ck3" />
+	<Text id="TI_Workpiece4" value="Werkst&#252;ck4" />
+	<Text id="TI_Workpiece5" value="Werkst&#252;ck5" />
+	<Text id="TI_Workpiece6" value="Werkst&#252;ck6" />
+	<Text id="TI_Workpiece7" value="Werkst&#252;ck7" />
+	<Text id="TI_Workpiece8" value="Werkst&#252;ck8" />
+
+	<Text id="TI_CurrentPosition" value="Position" />
+
+	<!-- PROZESS-Data OUT-->
+	<Text id="TI_Command" value="Befehl" />
+	<Text id="TI_ExecCmd" value=" Ausf&#252;hrbefehl" />
+	<Text id="TI_CmdGrip" value="Greifen" />
+	<Text id="TI_CmdRelease" value="Loslassen" />
+	<Text id="TI_CmdPositionAbs" value="Positionsfahrt" />
+	<Text id="TI_CmdPositionRel" value="Relativfahrt" />
+	<Text id="TI_CmdAck" value="Quittieren" />
+	<Text id="TI_CmdReference" value="Referenzieren" />
+	<Text id="TI_CmdStroke" value="Hubmessung" />
+
+	<!-- Workpiecenumber -->
+	<Text id="TI_WorkpieceNumber" value="Werkst&#252;cknummer" />
+	<Text id="TI_None" value="ohne" />	
+	<!--Grip Mode-->
+	<Text id="TI_GripMode" value="Greifrichtung" />		
+	<Text id="TI_OuterGripper" value="Au&#223;engreifer" />
+	<Text id="TI_InnerGripper" value="Innengreifer" />		
+	<!-- Desired Force -->
+	<Text id="TI_DesiredForce" value="Greifkraft" />
+	<Text id="TI_25PercentForce" value="25[%] Greifkraft" />
+	<Text id="TI_50PercentForce" value="50[%] Greifkraft" />
+	<Text id="TI_75PercentForce" value="75[%] Greifkraft" />
+	<Text id="TI_100PercentForce" value="100[%] Greifkraft" />
+	<Text id="TI_25PercentSoftForce" value="25[%] Kraft sensibel" />
+	<Text id="TI_50PercentSoftForce" value="50[%] Kraft sensibel" />
+	<Text id="TI_75PercentSoftForce" value="75[%] Kraft sensibel" />
+	<Text id="TI_100PercentSoftForce" value="100[%] Kraft sensibel" />
+	<Text id="TI_DesiredPosition" value="Zielposition" />
+
+
+<!--Diagnosis-->
+		<Text id="TI_Diagnosis" value="Diagnose" />
+		<!--Device Status-->
+		<Text id="TI_ME_Device" value="Ger&#228;te Status" />
+		<!--Detailed Device Status-->
+		<Text id="TI_Last_Error_code" value="Letzter Fehler" />
+		<Text id="TI_ERROR_NONE" value="kein Fehler" />
+		<!--Monitoring-->
+		<Text id="TI_ME_Counter" value="Monitoring" />
+		<!---->
+		<Text id="TI_CycleCounter" value="Zyklenz&#228;hler" />
+		<Text id="TI_ImpulseCounter" value="Impulsez&#228;hler" />
+		<Text id="TI_MaintenanceCounter" value="Wartungsz&#228;hler" />	
+
+<!--Commands.-->
+	<Text id="TI_SysCommands" value="Commands" />
+	<Text id="TI_SysCmd_ResetCounter" value="Wartungsz&#228;hler zur&#252;cksetzen" />
+	<Text id="TI_SysCmd_TeachWorkpiece" value="Werkst&#252;ck einlernen" />
+	<Text id="TI_SysCmd_TeachWorkpieceSave" value="Werkst&#252;ck gespeichert" />
+<!--Common-->
+	<Text id="TI_Common" value="Common" />
+
+
+	<Text id="TI_GripperMode" value="Greifrichtung" />
+	<Text id="TI_Tolerance" value="Toleranz [+/-]" />
+
+	<!--Text id="TI_SetSerialNumber" value="Seriennummer vergeben" /-->
+	<Text id="TI_MaintenanceCounterIntervall" value="Wartungsintervall" />
+	<Text id="TI_MaxHubValue" value="Maximaler Hub" />
+	<Text id="TI_ReferenceMode" value="Referenzierrichtung" />	  
+	<Text id="TI_REF_INNER" value="Referenzieren nach innen" />
+	<Text id="TI_REF_OUTER" value="Referenzieren nach au&#223;en" />
+
+	<!--general-->
+	<Text id="TI_ACTIVE" value="aktiv" />
+	<Text id="TI_INACTIVE" value="inaktiv" />
+	<Text id="TI_YES" value="ja" />
+	<Text id="TI_NO" value="nein" />
+
+	<Text id="TI_INFO_NOT_REFERENCED" value="INFO NICHT REFERNZIERT" />
+	<Text id="TI_WARNING_POSITION_NOT_REACHABLE" value="WARNUNG POSITION NICHT ERREICHBAR" />
+	<Text id="TI_INFO_UNKNOWN_COMMAND" value="INFO UNBEKANNTER BEFEHL" />
+
+
+
+</Language>
+
+  </ExternalTextCollection>
+  <Stamp crc="821881774"><Checker name="IODD-Checker V1.1.3" version="V1.1.3.0"/></Stamp>
+</IODevice>

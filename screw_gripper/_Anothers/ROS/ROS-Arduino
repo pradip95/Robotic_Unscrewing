@@ -1,0 +1,13 @@
+conda deactivate
+roscore
+rosrun rosserial_arduino serial_node.py /dev/ttyACM0
+
+rostopic pub /arduino_node/Initiate std_msgs/Bool true
+rostopic echo /arduino_node/Initiate
+
+rostopic pub /arduino_node/Release std_msgs/Bool true
+rostopic echo /arduino_node/Release
+
+rostopic pub /arduino_node/Position std_msgs/Int8 0
+rostopic pub /arduino_node/Position std_msgs/Int8 "data: -1"
+rostopic echo /arduino_node/Position

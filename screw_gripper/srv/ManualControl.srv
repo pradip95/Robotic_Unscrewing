@@ -1,0 +1,6 @@
+float64 motorStroke
+float64 gripperStroke
+bool relativeDrive
+---
+bool success
+Feedback execution

@@ -1,0 +1,6 @@
+bool softMode
+uint8 forceLevel
+bool gripInside
+---
+bool forceModeChanged
+bool gripDirectionChanged

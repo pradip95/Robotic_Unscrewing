@@ -1,0 +1,3 @@
+string arduinoFeedback
+string opcuaFeedback
+string errorMessage

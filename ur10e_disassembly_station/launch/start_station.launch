@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+
+  <!--
+  ########################################################################################
+  ## Launch file to start disassembly station with UR10e robot## 
+  ########################################################################################
+  -->
+
+    <!-- Declare arguments to be passed in -->
+    <!-- set to 'true' for running the endless FSM loop -->
+    <!-- for test/debug, 'false' is recommanded!! -->
+    <arg name="autonomous_mode"         default="false" />
+
+    <!-- ur_rtde is able for exchanging at 125-500 hz-->
+    <!-- the vision laptop runs at max. 30 hz -->
+    <arg name="frequency"               default="90"   /> 
+
+    <!-- selection from 1-3 -->
+    <arg name="starting_tool"           default="0"    />
+
+    <!-- robot starting state -->
+    <!-- check README for available states -->
+    <arg name="starting_state"          default="standby" />
+
+    <!-- max. 3 [m/s] -->
+    <arg name="speed"                   default="2"    />
+
+    <!-- max. 150 [m/s^2] -->
+    <!-- 0.1 - 0.5 recommanded -->
+    <arg name="acceleration"            default="0.2"  />
+
+    <!-- a higher blend make the path smoother, but sacrifies accuracy-->
+    <!-- 0 - 0.05 recommanded -->
+    <arg name="path_blend_rate"         default="0.02" />
+
+    <!-- shrink factor for screw depth measurement -->
+    <!-- tune this to a proper value, so that the screw bounding in debug stream fits the inscribeded circle of screw -->
+    <arg name="screw_shrink_factor"     default = "0.9"/>
+
+    <!-- factors for final tool-to-screw engagement -->
+    <!-- in [m] -->
+     <!-- <arg name="tcp_to_screw_dist"       default="0.02" />  -->
+    <arg name="tcp_to_screw_dist"       default="0.002" /> 
+    <arg name="pixel_scale_x"           default="0.0001" /> 
+    <arg name="pixel_scale_y"           default="0.00055" />
+    <!--  <arg name="pixel_scale_y"           default="0.00055" />  -->
+
+    <!-- choose planner configuration used for motion planning -->
+    <!-- available planners see: https://ompl.kavrakilab.org/planners.html -->
+    <arg name="planner"                 default="PRMStarkConfigDefault" />
+
+    <!-- booting check list -->
+    <!-- set to 'true' to enable the unit -->
+    <arg name="enable_robot"            default="true" />
+    <arg name="enable_control"          default="true" />
+    <arg name="enable_moveit"           default="true" />
+    <arg name="enable_drill"            default="true" />
+    <arg name="enable_gripper"          default="true" />
+    <arg name="enable_camera"           default="true"/>
+    <arg name="enable_yolo"             default="true"/>
+    <arg name="enable_joy"              default="true"/>
+    <arg name="enable_keyboard"         default="true" />
+    <arg name="enable_debug_stream"     default="true" />
+    
+    <!-- open in with caution -->
+    <arg name="enable_PID_xy"           default="false" />
+    <arg name="enable_PID_z"            default="false" />
+
+    <!-- ROS configuration -->
+    <arg name="output"                  default="screen"/>
+    <!-- when set to 'ture', all system nodes will respawn after crashing down -->
+    <arg name="auto_restart"            default="true" />
+
+    <!-- 1. Launch phiget board driver for operating drill end effector  -->
+    <include if="$(arg enable_drill)" file='$(find phidgets_ik)/launch/ik.launch'> 
+    </include>
+
+    <!-- 2.Start the station controlling server, which is conneted to pheriprals and handling all ros_service calls  -->
+    <node if="$(arg enable_robot)" name="ur10e_disassembly_station_server_node" pkg="ur10e_disassembly_station" type="ur10e_disassembly_station_server_node" output="$(arg output)" respawn="$(arg auto_restart)">
+        <param name="frequency"           value="$(arg frequency)"          type="int"/>
+        <param name="starting_tool"       value="$(arg starting_tool)"      type="int"/>
+        <param name="speed"               value="$(arg speed)"              type="double"/>
+        <param name="acceleration"        value="$(arg acceleration)"       type="double"/>
+        <param name="path_blend_rate"     value="$(arg path_blend_rate)"    type="double"/>
+        <remap from="rosout" to="station_server_debug"/>
+    </node>
+
+    <!-- 3. Start the MoveIt planning server, which is handling all MoveIt motion planning reqeusts -->
+    <node if="$(arg enable_moveit)" name="ur10e_disassembly_station_moveit_node" pkg="ur10e_disassembly_station" type="ur10e_disassembly_station_moveit_node" output="$(arg output)" respawn="$(arg auto_restart)">
+        <param name="frequency"           value="$(arg frequency)"          type="int"/>
+        <param name="planner"             value="$(arg planner)"            type="str"/>
+        <remap from="rosout" to="station_server_debug"/>
+    </node>
+
+    <!-- 4. Start central control node which is response for all intelligent behavior -->
+    <node if="$(arg enable_control)" name="ur10e_disassembly_station_control_node" pkg="ur10e_disassembly_station" type="ur10e_disassembly_station_control_node" output="$(arg output)" respawn="$(arg auto_restart)">
+        <param name="frequency"                   value="$(arg frequency)"               type="int"/>
+        <param name="tcp_dist"                    value="$(arg tcp_to_screw_dist)"       type="double"/>
+        <param name="shrink_factor"               value="$(arg screw_shrink_factor)"     type="double"/>
+        <param name="scale_factor_x"              value="$(arg pixel_scale_x)"           type="double"/>
+        <param name="scale_factor_y"              value="$(arg pixel_scale_y)"           type="double"/>
+        <param name="show_debug_stream"           value="$(arg enable_debug_stream)"     type="bool" />
+        <param name="start_with_PID_xy"           value="$(arg enable_PID_xy)"           type="bool" />
+        <param name="start_with_PID_z"            value="$(arg enable_PID_z)"            type="bool" />
+        <param name="start_state"                 value="$(arg starting_state)"          type="str" />
+        <param name="enable_moveit"               value="$(arg enable_moveit)"           type="bool" />
+        <param name="autonomous_mode"             value="$(arg autonomous_mode)"          type="bool" />
+        <remap from="rosout" to="station_client_debug"/>
+    </node>
+
+    <!-- 5. Launch realsense camera for publishing RGB-D image stream-->
+    <include if="$(arg enable_camera)" file='$(find realsense2_camera)/launch/rs_camera.launch'>
+    </include>
+
+    <!-- 6. Start YOLO detector node -->
+    <include if="$(arg enable_yolo)"  file='$(find yolov5_ros)/launch/yolov5.launch'>
+    </include>
+
+    <!-- 7. Launch MoveIt pipeline with robot model-->
+    <include if="$(arg enable_moveit)" file="$(find ur10e_moveit_config)/launch/plan_for_disassembly_station.launch">
+        <remap from="rosout" to="moveit_debug"/>
+    </include>
+
+    <!-- 8 Launch joystick driver for external manuel control of the robot-->
+    <node if="$(arg enable_joy)" name="joy_node" pkg="joy" type="joy_node" output="$(arg output)" respawn="$(arg auto_restart)">
+        <param name="~autorepeat_rate"           value="$(arg frequency)"/>
+        <param name="~default_trig_val "         value="true"/>
+        <param name="~dead_zone"                 value="0.01"/>
+        <param name="~dev_ff"                    value="/dev/input/event16"/>
+    </node>
+
+    <!-- 9. Launch keyboard driver -->
+    <node if="$(arg enable_keyboard)" pkg="keyboard_reader" type="keyboard_reader.py" name="keyboard_reader_node" output="$(arg output)" respawn="$(arg auto_restart)">
+    </node>
+
+    <!-- 10. Launch gripper end-effector for picking up disassembled screws -->
+    <include if="$(arg enable_gripper)" file='$(find screw_gripper)/launch/gripper.launch'>
+    </include>
+
+</launch>
+

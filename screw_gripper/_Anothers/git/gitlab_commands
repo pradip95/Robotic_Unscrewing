@@ -1,0 +1,10 @@
+switch branch:
+
+git branch -v
+git checkout develop-heng
+
+commit new data:
+
+git add .
+git commit -m 'update'
+git push

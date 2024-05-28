@@ -1,0 +1,4 @@
+int8 fromSlot
+---
+int8 currentToolIndex
+bool success

@@ -1,0 +1,5 @@
+cd catkin_ws/src/
+conda deactivate
+catkin build
+source devel/setup.bash
+roslaunch screw_gripper gripper.launch endpoint:=opc.tcp://172.22.132.13:4840 port:=/dev/ttyACM0

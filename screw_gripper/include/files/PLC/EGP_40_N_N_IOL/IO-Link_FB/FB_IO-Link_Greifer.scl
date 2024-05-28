@@ -1,0 +1,566 @@
+﻿FUNCTION_BLOCK "FB_IO-Link_SIEMENS_TIA"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      b_RELEASE_FB : Bool;   // Allgemeine Freigabe des Bausteins
+      by_COMMANDO : Byte;   // Übergabe des Fahrbefehls
+      b_EXECUTE_CMD : Bool;   // Freigabe/Start des Fahrbefehls
+      b_GRIPMODE : Bool;   // Grip Mode (0 = Wekstück von ausen greifen / 1 = Werkstück von innen greifen)
+      i_WORKPIECE_NR : Int;   // Vorgabe mit welchem parametrierten Fahrsatz gefahren werden soll
+      i_FORCE : Int;   // Force: Vorgabe der Greifkraft in 4 Stufen: 0 = 100% / 1 = 75% / 2 = 50% / 3 = 25%
+      r_DESIRED_POS : Real;   // Positionsvorgabe
+      w_INPUT_ADRESSE : Word;   // Eingangs Adresse aus der HW Configuration Format w#16#xxxx
+      w_OUTPUT_ADRESSE : Word;   // Ausgangs Adresse aus der HW Configuration w#16#xxxx
+      i_PORT_NR : Int;   // Porteintrag an welchem das IO Device angeschlossen ist. Wenn eine E/A Adresse direkt eingetragen werden kann ist hier eine "0" einzutragen
+   END_VAR
+
+   VAR_OUTPUT 
+      b_ERROR : Bool;   // Zeigt eine erkannte Störung am Greifer an
+      b_OUT_OF_SPECIFICATION : Bool;   // Zeigt an wenn ein Parameter auserhalb der Grenzen an den Greifer übertragen werden / Betrieb weiter möglich
+      b_MAINTAINANCE_REQUIRED : Bool;   // Wartung erforderlich / Betrieb weiter möglich
+      b_OPERATE : Bool;   // Greifer ist i.O. und kann betrieben werden
+      b_REFERENCED : Bool;   // Der Greifer ist Referenziert
+      b_SUCCESS : Bool;   // Wird während einer Werkstückerkennung im gegriffenen Zustand der Werkstückparameter "Position" geändert und das Werkstück befindet sich nicht mehr im Toleranzbereich der neuen Position, so wird das Success Flag zurückgesetzt.
+      b_END_STOP : Bool;   // Zeigt die erlernten End Stop Positionen an. Beim Referenzieren und Hubfahrt werden die Postionen der Endstops ermittelt.
+      b_BLOCKED : Bool;   // 0 = Keine Blockade erkannt / 1 = Blokade erkannt
+      b_PROCESSING_CMD : Bool;   // Spiegelbit des Execute CMD Bit. Bit wird True wenn das Gateway des Greifers das Zyklische Protokoll abgearbeitet ist und das Execute Command Bit gesetzt ist.
+      b_WORKPIECE_1 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_2 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_3 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_4 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_5 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_6 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_7 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_WORKPIECE_8 : Bool;   // Anzeige, ob das gegriffene Werkstück das selbe ist, welches bei Workpeace Nr. eingetragen ist.
+      b_HWSwitch_1 : Bool;   // Gibt den HW Switch 1 zurück
+      b_HWSwitch_2 : Bool;   // Gibt den HW Switch 2 zurück
+      r_CURRENT_POS : Real;   // Aktuelle Position des Greifers
+   END_VAR
+
+   VAR 
+      GETIO_PART_Instance {InstructionName := 'GETIO_PART'; LibVersion := '1.2'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : GETIO_PART;
+      SETIO_PART_Instance {InstructionName := 'SETIO_PART'; LibVersion := '1.2'} : SETIO_PART;
+      PDE_In : Struct   // Spiegelung der Input Daten nach dem einlesen
+         Byte_0_State : Byte;
+         Byte_1_Workpiece : Byte;
+         Byte_2_HWSwitches : Byte;
+         Byte_3_Reserved : Byte;
+         "Byte_4-7_Current_Position" : Real;
+      END_STRUCT;
+      PDA_Out : Struct   // Spiegelung der Output Daten vor der Ausgabe
+         Byte_0_Command : Byte;
+         "Byte_1_WP1-8_Gripmode" : Byte;
+         Byte_2_Force { ExternalWritable := 'False'} : Byte;
+         Byte_3_Reserved : Byte;
+         "Byte_4-7_Desired_Position" : Real;
+      END_STRUCT;
+      Current_State_Byte : Byte;
+      Current_State_Bit : Struct   // Aktueller Zustand aus Bitmuster
+         "00_Error" { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         "01_Out_of_Specification" { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         "02_Maintanance_Required" { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         "03_Operate" { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      END_STRUCT;
+      Work_State : Struct
+         Referenced { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         Success { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         End_Stop { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         Blocked { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         Processing_CMD { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      END_STRUCT;
+      "Byte_2_Workpiece_1-8" : Struct
+         Workpiece { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[1..8] of Bool;
+      END_STRUCT;
+      Byte_3_HWSwitch_1u2 : Struct
+         HWS_1 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+         HWS_2 { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      END_STRUCT;
+   END_VAR
+   VAR DB_SPECIFIC
+      Force : Byte;
+      Reserved : Byte;
+      "Desired Position" : Real;
+   END_VAR
+
+   VAR_TEMP 
+      retval_hmio_input : Int;
+      retval_hmio_output : Int;
+      hwio : HW_IO;
+      offset : Int;
+   END_VAR
+
+
+BEGIN
+	(*
+	FUNCTION_BLOCK FB_IO-Link_SIEMENS_TIA (FB 600)
+	TITLE = 'FB_IO-Link_SIEMENS_TIA'
+	VERSION : '1.0.2'
+	AUTHOR  : 'SCHUNK'
+	NAME    : 'FB_IO-Link_SIEMENS_TIA'
+	FAMILY  : 'SCHUNK'
+	Projekt Nr.: 3292
+	=============================================================================
+	 Schunk GmbH&Co.KG
+	 (c)Copyright (2017) All Rights Reserved
+	-----------------------------------------------------------------------------
+	 Library:       Schunk
+	 Tested with:   S7-1516 V2.x
+	 Engineering:   TIA Portal Version V15 Update 3
+	 Restrictions:  XXX(OB types, etc.)
+	 Requirements:  (hardware, technological package, memory needed, etc.)
+	 Functionality: The Funktion Block is mapping the IN/OUT Parameters to the Gripper Protokoll
+	 
+	*************************************************************************
+	Historie
+	####################
+	1.0.2   (Erstellt 2018.11.23)
+	- Einpflegen der Englischen Kommentare
+	- Scatter in Workpiece ersetzt durch Einzelauswertung
+	####################
+	1.0.1   (Erstellt 2018.11.23)
+	- Einführen des "i_PORT_NR" Parameters damit auch ET200s IO Link Module auf allen Ports verwendet werden können.
+	- Offset beim Schreiben und Lesen der E/A Daten
+	
+	####################
+	1.0.0
+	Release Funktion Block
+	
+	*************************************************************************)
+	
+	REGION MANUAL ENGLISCH
+	    
+	(*    
+	Discription Variablen:
+	
+	Input Variables
+	===================================
+	
+	b_RELEASE_FB        :   General release of the block. The block is not processed. Only the output parameters are written to "zero"
+	                        
+	by_COMMANDO         :   Transfer commands to the gripper
+	                        (Applicable commands can be found in the user manual or the IODD of the device)
+	                        
+	b_EXECUTE_CMD       :   Release / Start of the transmitted command.
+	
+	b_GRIPMODE          :   Gripping module (0 = gripping workpiece from outside / 1 = gripping workpiece from inside)
+	                        More detailed definition can be found in the manual.
+	                        
+	i_WORKPIECE_NR      :   Specification, which selected method is used to execute the transferred command.
+	                        
+	i_FORCE             :   Specification of the gripping force in 4 steps:
+	                                0 = 100%
+	                                1 = 75%
+	                                2 = 50%
+	                                3 = 25%
+	                        The specification of the gripping force is checked by the gripper and a warning is issued if the entry is incorrect
+	
+	r_DESIRED_POS       :   Entry of the desired position at a position drive
+	                        Entry of the desired Delta during a relative drive
+	                        
+	w_INPUT_ADRESSE     :   Enter the input address from the HW Configuration to determine the hardware IO
+	w_OUTPUT_ADRESSE    :   Enter the output address from the HW configuration to determine the hardware IO
+	i_PORT_NR           :   Enter the Port number where the device is connected. If an I/O address can be entered directly, enter a "0".
+	
+	******************************************************************************************************************************************
+	
+	Output Variables 
+	====================================
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Atention !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!!! The gripper can still be moved if "b_OUT_OF_SPECIFICATION" or "b_MAINTAINANCE_REQUIRED" = True.                 !!!
+	!!! If the "b_Error" bit is active, the gripper must first be acknowledged.                                         !!!
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	b_ERROR                 :   The gripper has a Frehler (For a more detailed description, please refer to the operating instructions)
+	
+	b_OUT_OF_SPECIFICATION  :   The gripper was sent cyclic data, which lies outside the stored Min and Max parameters.
+	                            This message persists until the cyclic data is transmitted correctly.
+	                            
+	b_MAINTAINANCE_REQUIRED :   Indicates when the Registered Maintenance Interval is reached. This message is not relevant to the function of the gripper.
+	
+	b_OPERATE               :   The gripper is ready for operation
+	
+	b_REFERENCED            :   The gripper is referenced
+	
+	b_SUCCESS               :   A move command has been completed successfully. If the workpiece parameter "Position" is changed during
+	                            a workpiece recognition in the gripped state and the workpiece is no longer in the tolerance range 
+	                            of the new position, the Success flag is reset.
+	
+	b_END_STOP              :   Base jaws are positioned at the end stop
+	
+	b_BLOCKED               :   The gripper was blocked during a motion drive
+	
+	b_PROCESSING_CMD        :   Mirror bit of the "b_EXECUTE_CMD" bit. Bit becomes true if the gateway of the gripper processes 
+	                            the cyclic protocol and the "b_EXECUTE_CMD" bit is set.
+	
+	b_WORKPIECE_1 bis ..._8 :   Indicates if the limits of the workpiece specification match the dimensions of the workpiece
+	
+	b_HWSwitch_1            :   Returns the HW Switch 1
+	
+	b_HWSwitch_2            :   Returns the HW Switch 2
+	
+	r_CURRENT_POS           :   Current position of the gripper
+	
+	
+	*************************************************************************
+	
+	Störungen   :  Internal disturbance evaluation currently not yet planned in the module
+	(w_ERROR_NO)
+	
+	
+	 *************************************************************************)
+	
+	    // Statement section REGION
+	    
+	END_REGION
+	
+	REGION MANUAL GERMAN
+	    
+	(*    
+	Beschreibung der Variablen:
+	
+	Eingangsvariablen
+	===================================
+	
+	b_RELEASE_FB        :   Allgemeine Freigabe des Bausteins. Der Baustein wird nicht bearbeitet. Es werden lediglich 
+	                        die Ausgangspasameter zu "Null" geschrieben
+	                        
+	by_COMMANDO         :   Übergabekomandos an den Greifer 
+	                        (Anwendbare Kommandos sind aus der Bedienungsanleitung oder der IODD der Gerätes zu entnehmen)
+	                        
+	b_EXECUTE_CMD       :   Freigabe / Start des Übertragenen Kommandos.
+	
+	b_GRIPMODE          :   Greifmodus (0 = Wekstück von ausen greifen / 1 = Werkstück von innen greifen)
+	                        Genauere Deffinition ist aus dem Handbuch zu entnehmen.
+	                        
+	i_WORKPIECE_NR      :   Vorgabe welcher gesteicherte Verfahrsatz übernommen wird um das Übergebene Kommando auszuführen.
+	                        
+	i_FORCE             :   Vorgabe der Greifkraft in 4 Stufen: 
+	                                0 = 100%
+	                                1 = 75%
+	                                2 = 50%
+	                                3 = 25%
+	                        Die Vorgabe der Greifkraft wird vom Greifer überprüft und bei einem falschen Eintrag wird eine Warnung ausgegeben 
+	
+	r_DESIRED_POS       :   Eintrag der gewünschten Position bei einer Positionsfahrt
+	                        Eintrag des gewünschten Delta bei einer Relativfahrt
+	                        
+	w_INPUT_ADRESSE     :   Eingangs Adresse aus der HW Configuration eintragen um die Hardware IO zu ermitteln
+	w_OUTPUT_ADRESSE    :   Ausgangs Adresse aus der HW Configuration eintragen um die Hardware IO zu ermitteln
+	i_PORT_NR           :   Eintrag des Porteintrag an welchem das IO Device angeschlossen ist. Wenn eine E/A Adresse direkt eingetragen werden kann ist hier eine "0" einzutragen
+	
+	******************************************************************************************************************************************
+	
+	Ausgangsvariablen 
+	====================================
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Achtung !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!!! Der Greifer kann weiterhin bewegt werden, wenn b_OUT_OF_SPECIFICATION oder b_MAINTAINANCE_REQUIRED = True sind. !!!
+	!!! Ist das  "b_Error" Bit aktiv so muß der Greifer zuerst Quittiert werden.                                        !!!
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	b_ERROR                 :   Der Greifer hat einen Frehler (genauere Beschreibung entnehmen sie Bitte der Bedienungsanleitung)
+	
+	b_OUT_OF_SPECIFICATION  :   Dem Greifer wurden zyklische Daten übermittelt, welche auserhalb der hinterlegten Min und Max Parameter liegen.
+	                            Diese Meldung steht so lange an, bis dieZyklischen Daten richtig übertragen werden. 
+	                            
+	b_MAINTAINANCE_REQUIRED :   Zeigt an, wenn der Eingetragene Wartungsintervall erreicht ist. Diese Meldung ist nicht relevant auf die Funktion des Greifers.
+	
+	b_OPERATE               :   Der Greifer ist Betriebsbereit
+	
+	b_REFERENCED            :   Der Greifer Ist Referenziert
+	
+	b_SUCCESS               :   Ein Fahrbefehl wurde erfolgreich abgeschlossen. Wird während einer Werkstückerkennung im gegriffenen Zustand 
+	                            der Werkstückparameter "Position" geändert und das Werkstück befindet sich nicht mehr im Toleranzbereich 
+	                            der neuen Position, so wird das Success Flag zurückgesetzt.
+	
+	b_END_STOP              :   Grundbacken sind am Endanschlag positioniert
+	
+	b_BLOCKED               :   Der Greifer wurde bei einer Bewegungsfahrt Blockiert
+	
+	b_PROCESSING_CMD        :   Spiegelbit des "b_EXECUTE_CMD" Bit. Bit wird True wenn das Gateway des Greifers das Zyklische Protokoll abgearbeitet
+	                            und das "b_EXECUTE_CMD" Bit gesetzt ist.
+	
+	b_WORKPIECE_1 bis ..._8 :   Zeigt an wenn die Grenzwerte der Werkstückvorgabe mit den Maßen des Werkstücks übereinstimmen
+	
+	b_HWSwitch_1            :   Gibt den HW Switch 1 zurück
+	
+	b_HWSwitch_2            :   Gibt den HW Switch 2 zurück
+	
+	r_CURRENT_POS           :   Aktuelle Position des Greifers
+	
+	
+	*************************************************************************
+	
+	Störungen   :  Interne Störauswertung derzeit im Baustein noch nicht vorgesehen 
+	(w_ERROR_NO)
+	
+	
+	 *************************************************************************)
+	    
+	    // Statement section REGION
+	    
+	END_REGION
+	
+	//****************************************** 
+	// Initialisierung der Ausgangsvariablen
+	//****************************************** 
+	REGION Init_Output
+	    
+	    // All input parameters and output parameters are written to 0.
+	    // Alle Eingangsparameter und Ausgangsparameter werden zu 0 geschrieben.
+	    
+	    #PDE_In.Byte_0_State := 16#0;
+	    #PDE_In.Byte_1_Workpiece :=16#0;
+	    #PDE_In.Byte_2_HWSwitches := 16#0;
+	    #PDE_In.Byte_3_Reserved := 16#0;
+	    #PDE_In."Byte_4-7_Current_Position" := 0.0;
+	    
+	    #PDA_Out.Byte_0_Command := 16#0;
+	    #PDA_Out."Byte_1_WP1-8_Gripmode" := 16#0;
+	    #PDA_Out.Byte_2_Force := 16#0;
+	    #PDA_Out.Byte_3_Reserved := 16#0;
+	    #PDA_Out."Byte_4-7_Desired_Position" := 0.0;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Release Prüfen
+	    
+	    // Release of the block is checked
+	    // Freigabe des Bausteins wird geprüft 
+	    
+	    IF NOT  #b_RELEASE_FB THEN
+	        
+	        GOTO Baustein_nicht_bearbeiten;
+	        
+	    END_IF;
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION  Einlesen der Eingangsdaten
+	    // From hardware address read the hardware ID
+	    // Aus Hardwareadresse die Hardware ID Auslesen
+	    
+	    #retval_hmio_input := LOG2MOD(IOID := B#16#54, ADDR := #w_INPUT_ADRESSE, HWID => #hwio);
+	    #offset := #i_PORT_NR * 8;
+	    
+	    // Read the data from the hardware ID and enter it in the data block
+	    // Aus der Hadware ID die Daten einlesen und in den Datenbaustein eintragen
+	    #GETIO_PART_Instance (ID:=#hwio,
+	                          OFFSET:=#offset,
+	                          LEN:=8,
+	                          STATUS=>#GETIO_PART_Instance.STATUS,
+	                          ERROR=>#GETIO_PART_Instance.ERROR,
+	                          INPUTS:=#PDE_In);
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Current State auswerten
+	    
+	    // Mask out the status word and resolve the "Current State"
+	    // Statuswort ausmaskieren und den "Current State" auflösen
+	    
+	    #Current_State_Byte := #PDE_In.Byte_0_State AND 2#00000111;  // Maskieren des Aktuellen Status und Eintrag in Static Current State
+	    
+	    (*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Atention !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+	    !!!! Here, the status Operate for "Out_of_Specification" and "Maintainance_Required" can be set to "True",               !!!!
+	    !!!! since the gripper is still to be used for all statuses. Exception is an "ERROR".                                    !!!!
+	    !!!!                                                                                                                     !!!!
+	    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Achtung !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   
+	    !!!! Hier kann der Status Operate bei "Out_of_Specification" und "Maintainance_Required" auf "True" gesetzen werden,     !!!!
+	    !!!! da der Greifer bei allen Stati noch zu bedienen ist. Ausnahme ist ein "ERROR".                                      !!!!
+	    !!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*)
+	    
+	    // Auswerten der Statusinformation und in Einzelbits eintragen
+	    
+	    // State 00 = Error
+	    IF #Current_State_Byte = 8#0 THEN
+	        #Current_State_Bit."00_Error" := TRUE;
+	        #Current_State_Bit."01_Out_of_Specification" := FALSE;
+	        #Current_State_Bit."02_Maintanance_Required" := FALSE;
+	        #Current_State_Bit."03_Operate" := FALSE;
+	      
+	        //****
+	        // State 01 = Out_of_Specification
+	    ELSIF #Current_State_Byte = 8#1 THEN
+	        #Current_State_Bit."00_Error" := FALSE;
+	        #Current_State_Bit."01_Out_of_Specification" := TRUE;
+	        #Current_State_Bit."02_Maintanance_Required" := FALSE;
+	        #Current_State_Bit."03_Operate" := FALSE;
+	       
+	        //****
+	        // State 02 = Maintanance_Required
+	    ELSIF #Current_State_Byte = 8#2 THEN
+	        #Current_State_Bit."00_Error" := FALSE;
+	        #Current_State_Bit."01_Out_of_Specification" := FALSE;
+	        #Current_State_Bit."02_Maintanance_Required" := TRUE;
+	        #Current_State_Bit."03_Operate" := FALSE;
+	     
+	        //****
+	        // State 03 = Operate
+	    ELSIF #Current_State_Byte = 8#3 THEN
+	        #Current_State_Bit."00_Error" := FALSE;
+	        #Current_State_Bit."01_Out_of_Specification" := FALSE;
+	        #Current_State_Bit."02_Maintanance_Required" := FALSE;
+	        #Current_State_Bit."03_Operate" := TRUE;
+	        
+	        //****
+	        // Wrong Status
+	        // Falscher Status
+	    ELSE    
+	        #Current_State_Bit."00_Error" := FALSE;
+	        #Current_State_Bit."01_Out_of_Specification" := FALSE;
+	        #Current_State_Bit."02_Maintanance_Required" := FALSE;
+	        #Current_State_Bit."03_Operate" := FALSE;
+	        ;
+	    END_IF;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION  Work State auswerten
+	    
+	    // Evaluate the working status of the gripper and enter Static
+	    // Arbeitsstatus des Greifers auswerten und Statisch eintragen
+	    
+	    #Work_State.Referenced := #PDE_In.Byte_0_State.%X3;
+	    #Work_State.Success := #PDE_In.Byte_0_State.%X4;
+	    #Work_State.End_Stop := #PDE_In.Byte_0_State.%X5;
+	    #Work_State.Blocked := #PDE_In.Byte_0_State.%X6;
+	    #Work_State.Processing_CMD := #PDE_In.Byte_0_State.%X7;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Workpiece auswerten
+	    
+	    // Evaluate Workpiece
+	    // Werkstück auswerten
+	    
+	    #b_WORKPIECE_1 := #PDE_In.Byte_1_Workpiece.%X0;
+	    #b_WORKPIECE_2 := #PDE_In.Byte_1_Workpiece.%X1;
+	    #b_WORKPIECE_3 := #PDE_In.Byte_1_Workpiece.%X2;
+	    #b_WORKPIECE_4 := #PDE_In.Byte_1_Workpiece.%X3;
+	    #b_WORKPIECE_5 := #PDE_In.Byte_1_Workpiece.%X4;
+	    #b_WORKPIECE_6 := #PDE_In.Byte_1_Workpiece.%X5;
+	    #b_WORKPIECE_7 := #PDE_In.Byte_1_Workpiece.%X6;
+	    #b_WORKPIECE_8 := #PDE_In.Byte_1_Workpiece.%X7;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION HW Endschalter Auswerten
+	    
+	    // Evaluate hardware limit switches
+	    // Hardware Endschalter Auswerten
+	    
+	    #Byte_3_HWSwitch_1u2.HWS_1 := #PDE_In.Byte_2_HWSwitches.%X0;
+	    #Byte_3_HWSwitch_1u2.HWS_2 := #PDE_In.Byte_2_HWSwitches.%X1;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Werkstück Nr. eintragen
+	    
+	    // insert Workwiece Number to Tehe Protocol 
+	    // Werkstücknummer ins Protokoll eintragen
+	    
+	    #PDA_Out."Byte_1_WP1-8_Gripmode" := INT_TO_BYTE(#i_WORKPIECE_NR);
+	    #PDA_Out."Byte_1_WP1-8_Gripmode" := SHL(IN := #PDA_Out."Byte_1_WP1-8_Gripmode",
+	                                            N := 4);
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Greifmodus eintragen
+	    
+	    // Insert Gripping Mode
+	    // Greifmodus eintragen
+	    
+	    #PDA_Out."Byte_1_WP1-8_Gripmode".%X0 := #b_GRIPMODE;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Kraft eintragen
+	    
+	   #PDA_Out.Byte_2_Force := INT_TO_BYTE(#i_FORCE);
+	    
+	END_REGION
+	
+	//###############################################################################################################################
+	
+	REGION Soll Position eintragen
+	    
+	    // Insert Position
+	    // Soll Position eintragen
+	    
+	    #PDA_Out."Byte_4-7_Desired_Position" := #r_DESIRED_POS;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION "Commandobyte" zusammensetzen
+	    
+	    // Assemble "Commandobyte"
+	    // Zusammenfügen des Kommandobytes
+	    
+	    #PDA_Out.Byte_0_Command := #by_COMMANDO;
+	    #PDA_Out.Byte_0_Command.%X7 := #b_EXECUTE_CMD;
+	    
+	END_REGION
+	//###############################################################################################################################
+	
+	REGION Daten auf Pripherie schreiben
+	    
+	Baustein_nicht_bearbeiten:
+	    
+	    // Write data to peripherals
+	    // Daten auf Peripherie schreiben
+	    
+	    #retval_hmio_output := LOG2MOD(IOID := B#16#55, ADDR := #w_OUTPUT_ADRESSE, HWID => #hwio);
+	    #offset := #i_PORT_NR * 8;
+	    
+	    #SETIO_PART_Instance(ID:=#hwio,
+	                         OFFSET:=#offset,
+	                         LEN:=8,
+	                         STATUS=>#SETIO_PART_Instance.STATUS,
+	                         ERROR=>#SETIO_PART_Instance.ERROR,
+	                         OUTPUTS:=#PDA_Out);
+	    
+	END_REGION
+	// ################################################################################################################################
+	
+	REGION Bausteinausgänge zuweisen
+	    
+	    // Assign block outputs
+	    // Baustein Ausgänge zuweisen
+	    
+	    #b_ERROR := #Current_State_Bit."00_Error";
+	    #b_OUT_OF_SPECIFICATION := #Current_State_Bit."01_Out_of_Specification";
+	    #b_MAINTAINANCE_REQUIRED := #Current_State_Bit."02_Maintanance_Required";
+	    #b_OPERATE := #Current_State_Bit."03_Operate";
+	    #b_REFERENCED := #Work_State.Referenced;
+	    #b_SUCCESS := #Work_State.Success;
+	    #b_END_STOP := #Work_State.End_Stop;
+	    #b_BLOCKED := #Work_State.Blocked;
+	    #b_PROCESSING_CMD := #Work_State.Processing_CMD;
+	    #b_WORKPIECE_1 := #"Byte_2_Workpiece_1-8".Workpiece[1];
+	    #b_WORKPIECE_2 := #"Byte_2_Workpiece_1-8".Workpiece[2];
+	    #b_WORKPIECE_3 := #"Byte_2_Workpiece_1-8".Workpiece[3];
+	    #b_WORKPIECE_4 := #"Byte_2_Workpiece_1-8".Workpiece[4];
+	    #b_WORKPIECE_5 := #"Byte_2_Workpiece_1-8".Workpiece[5];
+	    #b_WORKPIECE_6 := #"Byte_2_Workpiece_1-8".Workpiece[6];
+	    #b_WORKPIECE_7 := #"Byte_2_Workpiece_1-8".Workpiece[7];
+	    #b_WORKPIECE_8 := #"Byte_2_Workpiece_1-8".Workpiece[8];
+	    #b_HWSwitch_1 := #Byte_3_HWSwitch_1u2.HWS_1;
+	    #b_HWSwitch_2 := #Byte_3_HWSwitch_1u2.HWS_2;
+	    #r_CURRENT_POS := #PDE_In."Byte_4-7_Current_Position";
+	    
+	END_REGION
+	
+	//###############################################################################################################################
+	//
+	
+END_FUNCTION_BLOCK
+

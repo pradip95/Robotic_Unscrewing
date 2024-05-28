@@ -1,0 +1,7 @@
+output02 & output04 = slow clockwise program 1
+
+output04 = slow clockwise and anti-clockwise
+
+output04 & output06 = slow anti-clockwise program 2
+
+output04 & output06 & output02= slow anti-clockwise program 3

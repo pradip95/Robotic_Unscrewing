@@ -1,0 +1,4 @@
+---
+bool success
+ArduinoInfo arduino
+OPCUAInfo opcua

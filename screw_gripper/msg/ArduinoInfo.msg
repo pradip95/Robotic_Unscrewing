@@ -1,0 +1,3 @@
+bool initiate
+bool release
+float64 currentStrokeMM

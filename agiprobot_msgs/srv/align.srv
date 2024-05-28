@@ -1,0 +1,5 @@
+# YourCustomMessage.msg
+geometry_msgs/PoseArray[] pose_array
+---
+geometry_msgs/PoseArray[] pose_array
+bool success

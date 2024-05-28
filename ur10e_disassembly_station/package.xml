@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ur10e_disassembly_station</name>
+  <version>0.0.0</version>
+  <description>ros package for visual-based disassemble task execution at UR10e robot </description>
+
+  <maintainer email="yuhanjin89@gmail.com">Yuhan Jin</maintainer>
+
+  <license>MIT</license>
+
+  <author email="yuhanjin89@gmail.com">Yuhan Jin</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>control_lib</depend>
+  <!-- <depend>realsense2_camera</depend> -->
+  <depend>agiprobot_msgs</depend>
+  <depend>screw_gripper</depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <depend>opencv</depend>
+
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

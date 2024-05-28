@@ -1,0 +1,16 @@
+roslaunch ros_opcua_impl_freeopcua rosopcua.launch
+(rosservice list)
+rosservice call /opcua/opcua_client/connect "endpoint: 'opc.tcp://172.22.132.13:4840'"
+
+rosservice call /opcua/opcua_client/read "node:
+  nodeId: 'ns=3;s=\"OPC_UA_Ansteuerungsschnittstelle\".\"Freigeben\"'
+  qualifiedName: 'Freigeben'" 
+
+-----------------------------------------------------------------------------
+
+(cd repos_lokal/)
+(catkin build)
+(source devel/setup.bash)
+roslaunch ros_opcua_impl_freeopcua client.launch
+rosservice call opcua/opcua_client/connect opc.tcp://172.22.132.13:4840
+rosservice call /opcua/opcua_client/read "['ns=3;s=OperatingMode', 'Fehler']"

@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="baud" value="57600"/>
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find screw_gripper)/config/log.conf"/> 
+
+    <node name="arduino_node" pkg="rosserial_arduino" type="serial_node.py" args="$(arg port) $(arg baud)"/>
+    <node name="opcua_node" pkg="ros_opcua_impl_freeopcua" type="client_node">
+    	<param name="endpoint" value="$(arg endpoint)"/>
+    </node>
+    <node name="gripper_node" pkg="screw_gripper" type="gripper_system" output="screen"/>
+      
+</launch>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>screw_gripper</name>
+  <version>1.0.0</version>
+  <description>The screw_gripper package implements the service management to screw gripper system</description>
+  
+  <maintainer email="uxpdp@student.kit.edu">uxpdp</maintainer>
+  <license>LGPLv3</license>
+  <author email="uxpdp@student.kit.edu">uxpdp</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>ros_opcua_msgs</depend>
+  <depend>ros_opcua_srvs</depend>
+  <depend>std_msgs</depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  
+</package>

@@ -1,0 +1,8 @@
+string screwType 
+# default: "default"
+# determin how many loops we need to unscrew the chosen type
+int64 loops
+# acutal lengh = loops * excution unit length
+# only for debug usage
+---
+bool sucess

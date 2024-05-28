@@ -1,0 +1,5 @@
+float64 radiusSearchfield
+float64 strengthMax
+float64 torqueMax
+float64 distanceSteps
+int64 numberTries

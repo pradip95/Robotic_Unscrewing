@@ -1,0 +1,7 @@
+TCPPose goalPose
+string definedLocation
+bool useMoveit
+float64 velocity
+float64 acceleration
+---
+string answer

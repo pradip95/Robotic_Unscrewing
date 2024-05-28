@@ -1,0 +1,9 @@
+<launch>
+
+  <node name="move_group_ur10e" pkg="control_lib" type="unscrewTest" respawn="false" output="screen">
+    <rosparam command="load" file="$(find ur10e_drill_moveit_config)/config/kinematics.yaml"/>
+    <param name="/planning_plugin" value="ompl_interface/OMPLPlanner"/>
+    <rosparam command="load" file="$(find ur10e_drill_moveit_config)/config/ompl_planning.yaml"/>
+  </node>
+
+</launch>
